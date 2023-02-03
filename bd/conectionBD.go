@@ -11,7 +11,7 @@ import (
 var MongoConnect = conectBD()
 
 // clientOptions: URL de la base de datos
-var clientOptions = options.Client().ApplyURI("mongodb+srv://MartinGomezVega:r_LZc%f5X#LV6U9@cluster-tesis.3ph7abi.mongodb.net/?retryWrites=true&w=majority")
+var clientOptions = options.Client().ApplyURI("mongodb://MartinGomezVega:6hd3TlXoIbJpolfg@ac-jkru0ds-shard-00-00.3ph7abi.mongodb.net:27017,ac-jkru0ds-shard-00-01.3ph7abi.mongodb.net:27017,ac-jkru0ds-shard-00-02.3ph7abi.mongodb.net:27017/test?replicaSet=atlas-n1jjt3-shard-0&ssl=true&authSource=Cluster-Tesis&authMechanism=SCRAM-SHA-1")
 
 // conectBD: Conexion a la base de datos
 func conectBD() *mongo.Client {
