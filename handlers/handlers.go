@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/MartinMGomezVega/tesisApp/middlew"
+	"github.com/MartinMGomezVega/tesisApp/routers"
+
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
@@ -12,6 +15,8 @@ import (
 // drivers: Setear el puerto y escuchar el servidor
 func Drivers() {
 	router := mux.NewRouter() // Devuelve informacion del router
+
+	router.HandleFunc("/register", middlew.CheckBD(routers.Register)).Methods("POST")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
