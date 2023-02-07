@@ -35,7 +35,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validacion contra los datos recibidos por el registro del usuario
-	_, encontrado, _ := bd.CheckTheUserAlreadyExists(t.Email) // Chequeo de que ya existe el creado registrado
+	_, encontrado, _ := bd.CheckUserAlreadyExists(t.Email) // Chequeo de que ya existe el creado registrado
 	if encontrado {
 		// Error ya existe un usuario registrado con el email ingresado
 		http.Error(w, "Error already exists a registered user with the entered email address", 400)

@@ -17,6 +17,7 @@ func Drivers() {
 	router := mux.NewRouter() // Devuelve informacion del router
 
 	router.HandleFunc("/register", middlew.CheckBD(routers.Register)).Methods("POST")
+	router.HandleFunc("/login", middlew.CheckBD(routers.Login)).Methods("POST")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
