@@ -10,7 +10,7 @@ import (
 func main() {
 	// Chequear la conexión si es false no hay conexión
 	if !bd.CheckConnection() {
-		log.Fatal("Error, sin conexión a la base de datos")
+		log.Fatal("No database connection error")
 		return
 	}
 
