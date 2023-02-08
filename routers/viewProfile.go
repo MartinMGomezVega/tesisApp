@@ -7,8 +7,8 @@ import (
 	"github.com/MartinMGomezVega/tesisApp/bd"
 )
 
-// ViewPerfil: permite extraer los valores del perfil
-func ViewPerfil(w http.ResponseWriter, r *http.Request) {
+// ViewProfile: permite extraer los valores del perfil
+func ViewProfile(w http.ResponseWriter, r *http.Request) {
 	ID := r.URL.Query().Get("id")
 	if len(ID) < 1 {
 		http.Error(w, "You must send the parameter", http.StatusBadRequest) // Debe de enviar el parametro

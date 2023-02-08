@@ -18,7 +18,9 @@ func Drivers() {
 
 	router.HandleFunc("/register", middlew.CheckBD(routers.Register)).Methods("POST")
 	router.HandleFunc("/login", middlew.CheckBD(routers.Login)).Methods("POST")
-	//router.HandleFunc("/viewProfile", middlew.CheckBD(middlew.ValidateJWT(routers.ViewProfile))).Methods("GET")
+	router.HandleFunc("/viewProfile", middlew.CheckBD(middlew.ValidateJWT(routers.ViewProfile))).Methods("GET")
+	router.HandleFunc("/modifyProfile", middlew.CheckBD(middlew.ValidateJWT(routers.ModifyProfile))).Methods("PUT")
+	router.HandleFunc("/savePublication", middlew.CheckBD(middlew.ValidateJWT(routers.SavePublication))).Methods("POST")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
