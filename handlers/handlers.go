@@ -22,6 +22,7 @@ func Drivers() {
 	router.HandleFunc("/modifyProfile", middlew.CheckBD(middlew.ValidateJWT(routers.ModifyProfile))).Methods("PUT")
 	router.HandleFunc("/savePublication", middlew.CheckBD(middlew.ValidateJWT(routers.SavePublication))).Methods("POST")
 	router.HandleFunc("/readPosts", middlew.CheckBD(middlew.ValidateJWT(routers.ReadPosts))).Methods("GET")
+	router.HandleFunc("/deletePublication", middlew.CheckBD(middlew.ValidateJWT(routers.DeletePublication))).Methods("DELETE")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
