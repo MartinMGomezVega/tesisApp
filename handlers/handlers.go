@@ -35,6 +35,7 @@ func Drivers() {
 	router.HandleFunc("/consultationRelation", middlew.CheckBD(middlew.ValidateJWT(routers.ConsultationRelation))).Methods("GET")
 
 	router.HandleFunc("/listUsers", middlew.CheckBD(middlew.ValidateJWT(routers.ListUsers))).Methods("GET")
+	router.HandleFunc("/readPostsFollowers", middlew.CheckBD(middlew.ValidateJWT(routers.ReadPostsFollowers))).Methods("GET")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
