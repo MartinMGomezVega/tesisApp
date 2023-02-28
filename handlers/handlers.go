@@ -24,6 +24,18 @@ func Drivers() {
 	router.HandleFunc("/readPosts", middlew.CheckBD(middlew.ValidateJWT(routers.ReadPosts))).Methods("GET")
 	router.HandleFunc("/deletePublication", middlew.CheckBD(middlew.ValidateJWT(routers.DeletePublication))).Methods("DELETE")
 
+	router.HandleFunc("/uploadAvatar", middlew.CheckBD(middlew.ValidateJWT(routers.UploadAvatar))).Methods("POST")
+	router.HandleFunc("/getAvatar", middlew.CheckBD(routers.GetAvatar)).Methods("GET")
+
+	router.HandleFunc("/uploadBanner", middlew.CheckBD(middlew.ValidateJWT(routers.UploadBanner))).Methods("POST")
+	router.HandleFunc("/getBanner", middlew.CheckBD(routers.GetBanner)).Methods("GET")
+
+	router.HandleFunc("/highRelation", middlew.CheckBD(middlew.ValidateJWT(routers.HighRelation))).Methods("POST")
+	router.HandleFunc("/lowRelation", middlew.CheckBD(middlew.ValidateJWT(routers.LowRelation))).Methods("DELETE")
+	router.HandleFunc("/consultationRelation", middlew.CheckBD(middlew.ValidateJWT(routers.ConsultationRelation))).Methods("GET")
+
+	router.HandleFunc("/listUsers", middlew.CheckBD(middlew.ValidateJWT(routers.ListUsers))).Methods("GET")
+
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
@@ -32,7 +44,6 @@ func Drivers() {
 
 	// Creando un handler/importacion
 	// Los cors son quienes otorgan los permisos
-	handler := cors.AllowAll().Handler(router) // Todos pueden acceder
-
+	handler := cors.AllowAll().Handler(router)        // Todos pueden acceder
 	log.Fatal(http.ListenAndServe(":"+PORT, handler)) // Escucha el puerto
 }
