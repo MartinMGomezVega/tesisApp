@@ -23,10 +23,11 @@ func ReadPostsFollowers(ID string, page int) ([]models.ReturnPostsFollowers, boo
 	conditions = append(conditions, bson.M{
 		"$lookup": bson.M{
 			"from":         "publication",
-			"localfield":   "userRelationId",
+			"localField":   "userRelationId",
 			"foreignField": "userId",
-			"as":           "tweet",
+			"as":           "publication",
 		}})
+
 	// Obtener los resultados para poderlos procesar: $unwind -> permite que todos los documentos vengan iguales
 	conditions = append(conditions, bson.M{"$unwind": "$publication"})
 	// Obtener los datos ordenados de forma descendente por fecha
@@ -36,9 +37,13 @@ func ReadPostsFollowers(ID string, page int) ([]models.ReturnPostsFollowers, boo
 	// limite de pagina
 	conditions = append(conditions, bson.M{"$limit": 20})
 
+	var result []models.ReturnPostsFollowers
 	// Framework de MongoDB: aggregate
 	cursor, err := col.Aggregate(ctx, conditions)
-	var result []models.ReturnPostsFollowers
+	if err != nil {
+		return result, false
+	}
+
 	err = cursor.All(ctx, &result)
 	if err != nil {
 		return result, false

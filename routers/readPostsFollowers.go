@@ -17,7 +17,7 @@ func ReadPostsFollowers(w http.ResponseWriter, r *http.Request) {
 
 	// En page se debe convertir en dato numerico:
 	page, err := strconv.Atoi(r.URL.Query().Get("page"))
-	if err != nil {
+	if err != nil || page == 0 {
 		http.Error(w, "You must send the page number with a value greater than zero. ", http.StatusBadRequest) // Debe enviar el numero de pagina con un valor mayor a cero
 		return
 	}
