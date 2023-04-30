@@ -3,7 +3,6 @@ package routers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -12,7 +11,6 @@ import (
 
 // ChatGPT: Realiza las consultas a chat gpt de OpenAI
 func ChatGPT(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Estoy en Chat GPT...")
 	var req models.GptRequest
 
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -36,20 +34,15 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := client.CreateChatCompletion(ctx, openaiReq)
 	if err != nil {
-		fmt.Println("Error 2")
 		http.Error(w, "Error when calling the api to create the response to the sent message: "+err.Error(), 400)
 		return
 	}
-	// // Guardar respuesta en una variable
-	// var responseText string = resp.Choices[0].Message.Content
-	// fmt.Println("Response from Chat-GPT: ", responseText)
 
 	openaiReq.Messages[0].Role = openai.ChatMessageRoleUser
 	openaiReq.Messages[0].Content = resp.Choices[0].Message.Content
 
-	fmt.Println("resp.Choices[0].Message.Content", resp.Choices[0].Message.Content+"\n")
+	// fmt.Println("resp.Choices[0].Message.Content", resp.Choices[0].Message.Content+"\n")
 
-	fmt.Println("resp: ", resp)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(resp.Choices[0].Message.Content)
