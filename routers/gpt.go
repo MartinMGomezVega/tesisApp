@@ -19,7 +19,7 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := openai.NewClient("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")
+	client := openai.NewClient("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")
 	ctx := context.Background()
 
 	openaiReq := openai.ChatCompletionRequest{
