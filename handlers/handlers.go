@@ -12,7 +12,7 @@ import (
 	"github.com/rs/cors"
 )
 
-// drivers: Setear el puerto y escuchar el servidor
+// drivers: Setear el puerto y escuchar el servidor (se encarga de manejar las solicitudes HTTP que llegan al servidor)
 func Drivers() {
 	router := mux.NewRouter() // Devuelve informacion del router
 	// Registro
@@ -47,6 +47,9 @@ func Drivers() {
 	router.HandleFunc("/listUsers", middlew.CheckBD(middlew.ValidateJWT(routers.ListUsers))).Methods("GET")
 	// Leer publicaciones de mis seguidores
 	router.HandleFunc("/readPostsFollowers", middlew.CheckBD(middlew.ValidateJWT(routers.ReadPostsFollowers))).Methods("GET")
+
+	// INTELIGENCIAS ARTIFICIALES
+	router.HandleFunc("/gpt", middlew.CheckBD(routers.ChatGPT)).Methods("POST")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
