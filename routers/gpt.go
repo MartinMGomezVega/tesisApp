@@ -11,7 +11,7 @@ import (
 
 // ChatGPT: Realiza las consultas a chat gpt de OpenAI
 func ChatGPT(w http.ResponseWriter, r *http.Request) {
-	var req models.GptRequest
+	var req models.ChatGPTRequest
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -19,7 +19,7 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := openai.NewClient("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")
+	client := openai.NewClient(req.APIKey)
 	ctx := context.Background()
 
 	openaiReq := openai.ChatCompletionRequest{
