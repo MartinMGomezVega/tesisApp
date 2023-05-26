@@ -13,6 +13,11 @@ import (
 // UploadAvatar: Subir el avatar a la bd y servidor
 func UploadAvatar(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("avatar")
+	if err != nil {
+		http.Error(w, "Error getting the avatar: "+err.Error(), http.StatusBadRequest) // error al subir el banner
+		return
+	}
+
 	var extension = strings.Split(handler.Filename, ".")[1] // El elemento 1 es un string
 	var archivo string = "uploads/avatars/" + IDUser + "." + extension
 

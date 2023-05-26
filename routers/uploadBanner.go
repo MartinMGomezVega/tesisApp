@@ -13,6 +13,11 @@ import (
 // UploadBanner: Subir el banner a la bd y servidor
 func UploadBanner(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("banner")
+	if err != nil {
+		http.Error(w, "Error getting the banner: "+err.Error(), http.StatusBadRequest) // error al subir el banner
+		return
+	}
+
 	var extension = strings.Split(handler.Filename, ".")[1] // El elemento 1 es un string
 	var archivo string = "uploads/banners/" + IDUser + "." + extension
 

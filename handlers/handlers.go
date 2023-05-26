@@ -50,6 +50,8 @@ func Drivers() {
 
 	// INTELIGENCIAS ARTIFICIALES
 	router.HandleFunc("/gpt", middlew.CheckBD(routers.ChatGPT)).Methods("POST")
+	// Validar la Key de la API de Open AI
+	router.HandleFunc("/validateAPIKey", middlew.CheckBD(routers.ValidateAPIKey)).Methods("POST")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")

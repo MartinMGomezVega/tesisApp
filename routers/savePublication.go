@@ -14,6 +14,12 @@ func SavePublication(w http.ResponseWriter, r *http.Request) {
 	var message models.Publication
 	err := json.NewDecoder(r.Body).Decode(&message)
 
+	if err != nil {
+		// error aldecodificar el cuerpo de la solicitud HTTP en el objeto estructurado
+		http.Error(w, "Error when decoding the HTTP request body in the structured object. Error: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	registerSavePublication := models.SavePublication{
 		UserID:  IDUser,
 		Message: message.Message,

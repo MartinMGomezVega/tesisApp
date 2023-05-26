@@ -12,10 +12,9 @@ import (
 // ChatGPT: Realiza las consultas a chat gpt de OpenAI
 func ChatGPT(w http.ResponseWriter, r *http.Request) {
 	var req models.ChatGPTRequest
-
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		http.Error(w, "Invalid question or model: "+err.Error(), 400)
+		http.Error(w, "Invalid question: "+err.Error(), 400)
 		return
 	}
 
@@ -40,11 +39,8 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 
 	openaiReq.Messages[0].Role = openai.ChatMessageRoleUser
 	openaiReq.Messages[0].Content = resp.Choices[0].Message.Content
-
 	// fmt.Println("resp.Choices[0].Message.Content", resp.Choices[0].Message.Content+"\n")
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(resp.Choices[0].Message.Content)
-
 }
