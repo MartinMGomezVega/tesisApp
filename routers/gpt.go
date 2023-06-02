@@ -18,6 +18,7 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Agarrar la api key de la base de datos
 	client := openai.NewClient(req.APIKey)
 	ctx := context.Background()
 
