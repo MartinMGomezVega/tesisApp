@@ -19,14 +19,7 @@ func ValidateAPIKey(w http.ResponseWriter, r *http.Request) {
 	}
 
 	valid := false
-	if len(request.Apikey) != 0 && len(request.UserId) != 0 {
-		// Validacion del userID
-		_, err := bd.SearchProfile(request.UserId)
-		if err != nil {
-			http.Error(w, "The user does not exist. Error: "+err.Error(), 400) // El usuario no existe en la bd
-			return
-		}
-
+	if len(request.Apikey) != 0 {
 		// Realizar una llamada de prueba a la API de OpenAI
 		req, err := http.NewRequest("GET", "https://api.openai.com/v1/engines", nil)
 		if err != nil {
@@ -64,7 +57,7 @@ func ValidateAPIKey(w http.ResponseWriter, r *http.Request) {
 
 	if valid {
 		registerSaveAPIKey := models.SaveAPIKey{
-			UserId:   request.UserId,
+			UserId:   IDUser,
 			Apikey:   request.Apikey,
 			DateTime: time.Now(),
 		}

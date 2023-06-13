@@ -2,7 +2,6 @@ package models
 
 // APIKeyValidationRequest: Key de la API de Open AI
 type APIKeyValidationRequest struct {
-	UserId string `bson:"userId" json:"userId"`
 	Apikey string `bson:"apikey" json:"apikey"`
 }
 

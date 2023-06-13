@@ -7,6 +7,7 @@ import (
 	"github.com/MartinMGomezVega/tesisApp/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // InsertAPIKeys: Insertar en la bd la Key (validada) de la API de Open AI ingresada por el usuario
@@ -16,6 +17,20 @@ func InsertAPIKeys(t models.SaveAPIKey) (string, bool, error) {
 
 	db := MongoConnect.Database("AppThesis")
 	col := db.Collection("apikeys")
+
+	// Verificar si ya existe una API Key con el mismo valor
+	existingKeyFilter := bson.M{"apikey": t.Apikey}
+	existingKey := col.FindOne(ctx, existingKeyFilter)
+	if existingKey.Err() == nil {
+		var existingDoc bson.M
+		if err := existingKey.Decode(&existingDoc); err != nil {
+			return "", false, err
+		}
+		objID := existingDoc["_id"].(primitive.ObjectID)
+		return objID.String(), true, nil
+	} else if existingKey.Err() != mongo.ErrNoDocuments {
+		return "", false, existingKey.Err()
+	}
 
 	// Key
 	registerAPIKey := bson.M{
@@ -30,7 +45,7 @@ func InsertAPIKeys(t models.SaveAPIKey) (string, bool, error) {
 		return "", false, err
 	}
 
-	// Obtener el id de la publicacion
+	// Obtener el id de la key
 	objID, _ := result.InsertedID.(primitive.ObjectID)
 	return objID.String(), true, nil
 }
