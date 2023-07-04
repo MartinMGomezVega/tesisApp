@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// ReadPostsFollowers: leer los tweets de mi seguidores
+// ReadPostsFollowers: leer las publicaciones de mi seguidores
 func ReadPostsFollowers(ID string, page int) ([]models.ReturnPostsFollowers, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
