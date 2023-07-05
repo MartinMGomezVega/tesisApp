@@ -20,7 +20,7 @@ func ReadAllPosts(userID string, page int64) ([]*models.ReturnPublications, bool
 	db := MongoConnect.Database("AppThesis")
 	col := db.Collection("publication")
 
-	// Obtener los seguidores del usuario
+	// Obtener los id de las personas que sigue el usuario
 	idFollowers := GetFollowed(userID)
 	idFollowers = append(idFollowers, userID) // Incluir al usuario en la lista de seguidores
 	// fmt.Println("Seguidores: ", idFollowers)

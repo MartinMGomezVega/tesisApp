@@ -45,7 +45,6 @@ func ReadUsers(ID string, page int64, search string, typeSearch string) ([]*mode
 		var s models.User
 		err := cursor.Decode(&s)
 		if err != nil {
-			fmt.Println(err.Error())
 			return results, false
 		}
 		// Consultar la relacion del usuario
@@ -55,6 +54,9 @@ func ReadUsers(ID string, page int64, search string, typeSearch string) ([]*mode
 
 		include = false
 		found, err = ConsultationRelation(r) // Devuelve true o false
+		if err != nil {
+			return results, false
+		}
 		if typeSearch == "new" && !found {
 			include = true // Es un usuario que no sigo
 		}
@@ -82,7 +84,6 @@ func ReadUsers(ID string, page int64, search string, typeSearch string) ([]*mode
 
 	err = cursor.Err()
 	if err != nil {
-		fmt.Println(err.Error())
 		return results, false
 	}
 
