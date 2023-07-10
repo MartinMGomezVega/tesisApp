@@ -3,6 +3,7 @@ package routers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -18,30 +19,40 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Agarrar la api key de la base de datos
-	client := openai.NewClient(req.APIKey)
-	ctx := context.Background()
+	fmt.Println("api_key:", req.APIKey)
+	fmt.Println("Question:", req.Question)
 
-	openaiReq := openai.ChatCompletionRequest{
-		Model: openai.GPT3Dot5Turbo,
-		Messages: []openai.ChatCompletionMessage{
-			{
-				Role:    openai.ChatMessageRoleUser,
-				Content: req.Question,
-			},
-		},
-	}
-
-	resp, err := client.CreateChatCompletion(ctx, openaiReq)
-	if err != nil {
-		http.Error(w, "Error when calling the api to create the response to the sent message: "+err.Error(), 400)
+	fmt.Println("id user:", IDUser)
+	if len(IDUser) > 0 {
+		http.Error(w, "IDUser is null: "+err.Error(), 400)
 		return
-	}
+	} else {
+		// Agarrar la api key de la base de datos
 
-	openaiReq.Messages[0].Role = openai.ChatMessageRoleUser
-	openaiReq.Messages[0].Content = resp.Choices[0].Message.Content
-	// fmt.Println("resp.Choices[0].Message.Content", resp.Choices[0].Message.Content+"\n")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(resp.Choices[0].Message.Content)
+		client := openai.NewClient(req.APIKey)
+		ctx := context.Background()
+
+		openaiReq := openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: req.Question,
+				},
+			},
+		}
+
+		resp, err := client.CreateChatCompletion(ctx, openaiReq)
+		if err != nil {
+			http.Error(w, "Error when calling the api to create the response to the sent message: "+err.Error(), 400)
+			return
+		}
+
+		openaiReq.Messages[0].Role = openai.ChatMessageRoleUser
+		openaiReq.Messages[0].Content = resp.Choices[0].Message.Content
+		// fmt.Println("resp.Choices[0].Message.Content", resp.Choices[0].Message.Content+"\n")
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(resp.Choices[0].Message.Content)
+	}
 }
