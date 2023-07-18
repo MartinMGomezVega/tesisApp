@@ -2,7 +2,6 @@ package bd
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -25,10 +24,8 @@ func ConsultationRelation(t models.Relation) (bool, error) {
 	}
 
 	var result models.Relation
-	fmt.Println(result)
 	err := col.FindOne(ctx, condition).Decode(&result)
 	if err != nil {
-		fmt.Println(err.Error())
 		return false, err
 	}
 

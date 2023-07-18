@@ -24,12 +24,12 @@ func InsertAPIKeys(t models.SaveAPIKey) (string, bool, error) {
 	if existingKey.Err() == nil {
 		var existingDoc bson.M
 		if err := existingKey.Decode(&existingDoc); err != nil {
-			return "", false, err
+			return "Error decoding api key.", false, err
 		}
 		objID := existingDoc["_id"].(primitive.ObjectID)
 		return objID.String(), true, nil
 	} else if existingKey.Err() != mongo.ErrNoDocuments {
-		return "", false, existingKey.Err()
+		return "No api key found.", false, existingKey.Err()
 	}
 
 	// Key
@@ -42,7 +42,7 @@ func InsertAPIKeys(t models.SaveAPIKey) (string, bool, error) {
 	// Insertar la Key de la API de Open AI
 	result, err := col.InsertOne(ctx, registerAPIKey)
 	if err != nil {
-		return "", false, err
+		return "Error inserting api key.", false, err
 	}
 
 	// Obtener el id de la key

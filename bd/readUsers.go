@@ -2,7 +2,6 @@ package bd
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -35,7 +34,7 @@ func ReadUsers(ID string, page int64, search string, typeSearch string) ([]*mode
 
 	cursor, err := col.Find(ctx, query, findOptions)
 	if err != nil {
-		fmt.Println(err.Error())
+		// fmt.Println(err.Error())
 		return results, false
 	}
 
@@ -53,10 +52,8 @@ func ReadUsers(ID string, page int64, search string, typeSearch string) ([]*mode
 		r.UserRelationID = s.ID.Hex()
 
 		include = false
-		found, err = ConsultationRelation(r) // Devuelve true o false
-		if err != nil {
-			return results, false
-		}
+		found, _ = ConsultationRelation(r) // Devuelve true o false
+
 		if typeSearch == "new" && !found {
 			include = true // Es un usuario que no sigo
 		}
