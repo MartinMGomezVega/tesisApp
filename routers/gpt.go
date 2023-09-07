@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/MartinMGomezVega/tesisApp/bd"
@@ -78,6 +79,7 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 
 	// Al ser valida, realizar la consulta a chat gpt
 	var response string
+	var errorText string
 	if validateKey {
 		fmt.Println("Status Api Key: ", validateKey)
 
@@ -96,14 +98,23 @@ func ChatGPT(w http.ResponseWriter, r *http.Request) {
 
 		resp, err := client.CreateChatCompletion(ctx, openaiReq)
 		if err != nil {
-			http.Error(w, "Error when calling the api to create the response to the sent message: "+err.Error(), 400)
-			return
+			errorText = "Error when calling the api to create the response to the sent message: " + err.Error()
+			if strings.Contains(errorText, "You exceeded your current quota") {
+				errorText = "Ha superado su cuota actual, por favor compruebe los detalles de su plan y facturación en OpenAI."
+			} else {
+				http.Error(w, errorText, 400)
+				return
+			}
 		}
 
 		// openaiReq.Messages[0].Role = openai.ChatMessageRoleUser
 		// openaiReq.Messages[0].Content = resp.Choices[0].Message.Content
 		// fmt.Println("resp.Choices[0].Message.Content", resp.Choices[0].Message.Content+"\n")
-		response = resp.Choices[0].Message.Content
+		if strings.Contains(errorText, "Ha superado su cuota actual") {
+			response = "Ha superado su cuota actual, por favor compruebe los detalles de su plan y facturación en OpenAI."
+		} else {
+			response = resp.Choices[0].Message.Content
+		}
 
 	} else {
 		response = "Key not valid"
