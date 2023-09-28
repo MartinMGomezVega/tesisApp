@@ -53,6 +53,10 @@ func Drivers() {
 	// Validar la Key de la API de Open AI
 	router.HandleFunc("/validateAPIKey", middlew.CheckBD(routers.ValidateAPIKey)).Methods("POST")
 
+	// EMPLEOS
+	// Guardar publicacion del empleo
+	router.HandleFunc("/savePublicationJob", middlew.CheckBD(middlew.ValidateJWT(routers.SavePublicationJob))).Methods("POST")
+
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
