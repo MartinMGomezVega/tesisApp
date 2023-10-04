@@ -12,5 +12,6 @@ type SavePublicationJob struct {
 	TypeOfWorkplace string    `bson:"typeOfWorkplace" json:"typeOfWorkplace"`
 	JobLocation     string    `bson:"jobLocation" json:"jobLocation"`
 	JobType         string    `bson:"jobType" json:"jobType"`
+	Description     string    `bson:"description" json:"description"`
 	DatePublication time.Time `bson:"datePublication" json:"datePublication"`
 }

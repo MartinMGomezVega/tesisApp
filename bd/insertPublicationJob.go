@@ -26,6 +26,7 @@ func InsertPublicationJob(t models.SavePublicationJob) (string, bool, error) {
 		"jobLocation":     t.JobLocation,
 		"jobType":         t.JobType,
 		"datePublication": t.DatePublication,
+		"description":     t.Description,
 	}
 
 	// Insertar la publicacion del empleo
