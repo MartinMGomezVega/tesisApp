@@ -14,4 +14,5 @@ type SavePublicationJob struct {
 	JobType         string    `bson:"jobType" json:"jobType"`
 	Description     string    `bson:"description" json:"description"`
 	DatePublication time.Time `bson:"datePublication" json:"datePublication"`
+	Finished        bool      `bson:"finished" json:"finished"`
 }

@@ -29,6 +29,7 @@ func SavePublicationJob(w http.ResponseWriter, r *http.Request) {
 		JobType:         publication.JobType,
 		Description:     publication.Description,
 		DatePublication: time.Now(), // Fecha del anuncio
+		Finished:        false,
 	}
 
 	_, status, err := bd.InsertPublicationJob(registerSavePublicationJob)

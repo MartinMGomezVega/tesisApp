@@ -2,7 +2,7 @@ package bd
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"time"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -39,7 +39,8 @@ func ReadAllPosts(userID string, page int64) ([]*models.ReturnPublications, bool
 
 	cursor, err := col.Find(ctx, condition, options)
 	if err != nil {
-		log.Fatal(err.Error())
+		// log.Fatal(err.Error())
+		fmt.Println(err.Error())
 		return results, false
 	}
 
