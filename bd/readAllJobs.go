@@ -27,9 +27,9 @@ func ReadAllJobs(page int64) ([]*models.ReturnJobs, bool) {
 
 	// En MongoDB existen las opciones que son para obtener documentos
 	findOptions := options.Find()
-	findOptions.SetLimit(20)                              // Cuantos documentos trae
-	findOptions.SetSort(bson.D{{Key: "date", Value: -1}}) // Traer por fecha en orden descendente
-	findOptions.SetSkip((page - 1) * 20)                  // Cuantos documentos hay que saltear (es el limite que se debe de saltear)
+	findOptions.SetLimit(20)                                         // Cuantos documentos trae
+	findOptions.SetSort(bson.D{{Key: "datePublication", Value: -1}}) // Traer por fecha en orden descendente
+	findOptions.SetSkip((page - 1) * 20)                             // Cuantos documentos hay que saltear (es el limite que se debe de saltear)
 
 	cursor, err := col.Find(ctx, condition, findOptions)
 	if err != nil {
