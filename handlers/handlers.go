@@ -58,6 +58,8 @@ func Drivers() {
 	router.HandleFunc("/savePublicationJob", middlew.CheckBD(middlew.ValidateJWT(routers.SavePublicationJob))).Methods("POST")
 	// Leer los empleos publicados
 	router.HandleFunc("/readPostsJobs", middlew.CheckBD(middlew.ValidateJWT(routers.ReadPostsJobs))).Methods("GET")
+	// Postularse a un empleo
+	router.HandleFunc("/savePostulationJob", middlew.CheckBD(middlew.ValidateJWT(routers.SavePostulationJob))).Methods("POST")
 
 	// abrir el puerto
 	PORT := os.Getenv("PORT")
