@@ -8,5 +8,6 @@ type PublicationJob struct {
 	JobLocation     string `bson:"jobLocation" json:"jobLocation"`
 	JobType         string `bson:"jobType" json:"jobType"`
 	Description     string `bson:"description" json:"description"`
+	EmailRecruiter  string `bson:"emailRecruiter" json:"emailRecruiter"`
 	Finished        bool   `bson:"finished" json:"finished"`
 }

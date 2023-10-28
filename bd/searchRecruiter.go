@@ -2,7 +2,6 @@ package bd
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -10,25 +9,28 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// SearchRecruiter: Busca un empleo en la bd
+// SearchRecruiter: Busca una postulación de empleo en la bd y devuelve el documento completo
 func SearchRecruiter(IdJob string) (models.PublicationJob, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	db := MongoConnect.Database("AppThesis")
-	col := db.Collection("jobs")
+	col := db.Collection("postulations")
 
-	var profile models.PublicationJob
-	objID, _ := primitive.ObjectIDFromHex(IdJob)
+	var job models.PublicationJob
+	objID, err := primitive.ObjectIDFromHex(IdJob)
+	if err != nil {
+		return job, err
+	}
 
 	condition := bson.M{
 		"_id": objID,
 	}
 
-	err := col.FindOne(ctx, condition).Decode(&profile)
+	err = col.FindOne(ctx, condition).Decode(&job)
 	if err != nil {
-		fmt.Println("Register not found " + err.Error()) // No se encontro el registro
-		return profile, err
+		return job, err
 	}
-	return profile, nil
+
+	return job, nil
 }

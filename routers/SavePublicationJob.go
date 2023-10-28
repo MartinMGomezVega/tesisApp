@@ -28,6 +28,7 @@ func SavePublicationJob(w http.ResponseWriter, r *http.Request) {
 		JobLocation:     publication.JobLocation,
 		JobType:         publication.JobType,
 		Description:     publication.Description,
+		EmailRecruiter:  publication.EmailRecruiter,
 		DatePublication: time.Now(), // Fecha del anuncio
 		Finished:        false,
 	}

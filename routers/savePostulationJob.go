@@ -8,6 +8,7 @@ import (
 
 	"github.com/MartinMGomezVega/tesisApp/bd"
 	"github.com/MartinMGomezVega/tesisApp/models"
+	"github.com/MartinMGomezVega/tesisApp/pkg/service"
 )
 
 // SavePostulationJob: permite guardar la postulacion al empleo en la bd
@@ -41,7 +42,7 @@ func SavePostulationJob(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Enviar mail al usuario que postulo el empleo
-	statusSendEmail, err := SendPostulationEmail(registerSavePostulationJob)
+	statusSendEmail, err := service.SendPostulationEmail(registerSavePostulationJob)
 	if err != nil {
 		// error al enviar la postulacion por email al usuario que publico el empleo
 		http.Error(w, "Error sending the application by email to the user who posted the job: "+err.Error(), 400)
