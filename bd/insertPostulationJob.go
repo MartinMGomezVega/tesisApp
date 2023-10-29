@@ -2,7 +2,6 @@ package bd
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -39,6 +38,5 @@ func InsertPostulationJob(t models.PostulationJob) (string, error) {
 
 	// Obtener el id de la postulacion del usuario
 	objID, _ := result.InsertedID.(primitive.ObjectID)
-	fmt.Println("objID al guardar: ", objID)
 	return objID.String(), nil
 }

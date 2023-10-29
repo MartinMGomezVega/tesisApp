@@ -12,16 +12,13 @@ import (
 // SendPostulationEmail: Se encarga de enviar el email al reclutador con la información del postulante
 func SendPostulationEmail(candidate models.PostulationJob) (bool, error) {
 	// Buscar el email del usuario que postuló el empleo con el t.IdJob
-	fmt.Println("id del candidato: ", candidate.IdJob)
-
 	recruiterPostulation, err := bd.SearchRecruiter(candidate.IdJob)
-	fmt.Println("Email del reclutador: ", recruiterPostulation.EmailRecruiter)
 	if err != nil {
 		return false, err
 	}
 
 	// Configurar el cliente de correo
-	d := gomail.NewDialer("smtp.your-email-provider.com", 587, "valkiria.jobs@gmail.com", "Tesis1999")
+	d := gomail.NewDialer("smtp.gmail.com", 587, "valkiria.jobs@gmail.com", "zzmp qkxj nmas kubm")
 
 	// Construcción del cuerpo del mensaje
 	body := "Información del candidato:\n"
@@ -46,12 +43,17 @@ func SendPostulationEmail(candidate models.PostulationJob) (bool, error) {
 	attachmentData := candidate.CV.Content
 
 	// Agregar el archivo adjunto al correo
+	fmt.Println("Tamaño del archivo antes de enviarlo por email: ", candidate.CV.Size)
 	m.Attach(candidate.CV.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
 		_, err := w.Write(attachmentData)
-		return err
+		if err != nil {
+			return err
+		}
+		return nil
 	}))
 
 	if err := d.DialAndSend(m); err != nil {
+		fmt.Println("Error DialAndSend: ", err.Error())
 		return false, err
 	}
 

@@ -14,44 +14,33 @@ import (
 
 // SavePostulationJob: permite guardar la postulación al empleo en la bd
 func SavePostulationJob(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(10 << 20) // 10 MB max size
-	fmt.Println("Entro!")
+	err := r.ParseMultipartForm(20 << 20) // Aumentar el límite a 20 MB (20 * 1024 * 1024 bytes)
 
 	if err != nil {
-		fmt.Println("Error:", err.Error())
 		http.Error(w, "Error when parsing the form data: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	fmt.Println("Name:", r.FormValue("name"))
-	fmt.Println("Surname:", r.FormValue("surname"))
-	fmt.Println("countryCode:", r.FormValue("countryCode"))
-	fmt.Println("mobilePhone:", r.FormValue("mobilePhone"))
-	fmt.Println("email:", r.FormValue("email"))
-	fmt.Println("describe:", r.FormValue("describe"))
-	fmt.Println("idJob:", r.FormValue("idJob"))
-
 	// Obtener el archivo adjunto (currículum)
 	cvFile, header, err := r.FormFile("cv")
 	if err != nil {
-		fmt.Println("Error:", err.Error())
 		http.Error(w, "Error al obtener el currículum: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 	defer cvFile.Close()
-	fmt.Println("cv nombre:", header.Filename)
-	fmt.Println("cv tamaño:", header.Size)
+	// fmt.Println("cv nombre:", header.Filename)
+	// fmt.Println("cv tamaño:", header.Size)
 
 	// Leer el contenido del archivo en un slice de bytes
 	cvData, err := io.ReadAll(cvFile)
 	if err != nil {
-		fmt.Println("Error al leer el currículum: ", err)
-		http.Error(w, "Error al leer el currículum: "+err.Error(), http.StatusBadRequest)
+		http.Error(w, "Error when reading the curriculum vitae: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	attachment := models.Attachment{
 		Filename: header.Filename,
+		Size:     header.Size,
 		Content:  cvData,
 	}
 
@@ -70,7 +59,7 @@ func SavePostulationJob(w http.ResponseWriter, r *http.Request) {
 	// Guardar la postulación en la base de datos
 	_, err = bd.InsertPostulationJob(postulation)
 	if err != nil {
-		http.Error(w, "Error al guardar la postulación: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Error saving the application:"+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

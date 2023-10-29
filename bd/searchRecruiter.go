@@ -15,7 +15,7 @@ func SearchRecruiter(IdJob string) (models.PublicationJob, error) {
 	defer cancel()
 
 	db := MongoConnect.Database("AppThesis")
-	col := db.Collection("postulations")
+	col := db.Collection("jobs")
 
 	var job models.PublicationJob
 	objID, err := primitive.ObjectIDFromHex(IdJob)

@@ -6,6 +6,7 @@ import (
 
 type Attachment struct {
 	Filename string
+	Size     int64
 	Content  []byte
 }
 
