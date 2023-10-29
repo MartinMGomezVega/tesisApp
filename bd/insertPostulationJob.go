@@ -2,6 +2,7 @@ package bd
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/MartinMGomezVega/tesisApp/models"
@@ -10,7 +11,7 @@ import (
 )
 
 // InsertPostulationJob: guardo la postulacion al empleo en la bd
-func InsertPostulationJob(t models.PostulationJob) (string, bool, error) {
+func InsertPostulationJob(t models.PostulationJob) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
@@ -33,10 +34,11 @@ func InsertPostulationJob(t models.PostulationJob) (string, bool, error) {
 	// Insertar la postulacion del usuario
 	result, err := col.InsertOne(ctx, registerPostulationJob)
 	if err != nil {
-		return "", false, err
+		return "", err
 	}
 
 	// Obtener el id de la postulacion del usuario
 	objID, _ := result.InsertedID.(primitive.ObjectID)
-	return objID.String(), true, nil
+	fmt.Println("objID al guardar: ", objID)
+	return objID.String(), nil
 }

@@ -3,6 +3,7 @@ package routers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -11,41 +12,72 @@ import (
 	"github.com/MartinMGomezVega/tesisApp/pkg/service"
 )
 
-// SavePostulationJob: permite guardar la postulacion al empleo en la bd
+// SavePostulationJob: permite guardar la postulación al empleo en la bd
 func SavePostulationJob(w http.ResponseWriter, r *http.Request) {
-	var postulation models.PostulationJob
-	err := json.NewDecoder(r.Body).Decode(&postulation)
+	err := r.ParseMultipartForm(10 << 20) // 10 MB max size
+	fmt.Println("Entro!")
 
 	if err != nil {
-		// error aldecodificar el cuerpo de la solicitud HTTP en el objeto estructurado
-		http.Error(w, "Error when decoding the HTTP request body in the structured object. Error: "+err.Error(), http.StatusBadRequest)
+		fmt.Println("Error:", err.Error())
+		http.Error(w, "Error when parsing the form data: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	registerSavePostulationJob := models.PostulationJob{
-		Name:            postulation.Name,
-		Surname:         postulation.Surname,
-		CountryCode:     postulation.CountryCode,
-		MobilePhone:     postulation.MobilePhone,
-		Email:           postulation.Email,
-		Describe:        postulation.Describe,
-		CV:              postulation.CV,
-		IdJob:           postulation.IdJob,
-		DatePostulation: time.Now(), // Fecha de la postulacion
-	}
+	fmt.Println("Name:", r.FormValue("name"))
+	fmt.Println("Surname:", r.FormValue("surname"))
+	fmt.Println("countryCode:", r.FormValue("countryCode"))
+	fmt.Println("mobilePhone:", r.FormValue("mobilePhone"))
+	fmt.Println("email:", r.FormValue("email"))
+	fmt.Println("describe:", r.FormValue("describe"))
+	fmt.Println("idJob:", r.FormValue("idJob"))
 
-	_, status, err := bd.InsertPostulationJob(registerSavePostulationJob)
+	// Obtener el archivo adjunto (currículum)
+	cvFile, header, err := r.FormFile("cv")
 	if err != nil {
-		// error al guardar la postulacion
-		http.Error(w, "An error occurred while saving the postulation. Please try again. Error: "+err.Error(), 400)
+		fmt.Println("Error:", err.Error())
+		http.Error(w, "Error al obtener el currículum: "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	defer cvFile.Close()
+	fmt.Println("cv nombre:", header.Filename)
+	fmt.Println("cv tamaño:", header.Size)
+
+	// Leer el contenido del archivo en un slice de bytes
+	cvData, err := io.ReadAll(cvFile)
+	if err != nil {
+		fmt.Println("Error al leer el currículum: ", err)
+		http.Error(w, "Error al leer el currículum: "+err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// Enviar mail al usuario que postulo el empleo
-	statusSendEmail, err := service.SendPostulationEmail(registerSavePostulationJob)
+	attachment := models.Attachment{
+		Filename: header.Filename,
+		Content:  cvData,
+	}
+
+	postulation := models.PostulationJob{
+		Name:            r.FormValue("name"),
+		Surname:         r.FormValue("surname"),
+		CountryCode:     r.FormValue("countryCode"),
+		MobilePhone:     r.FormValue("mobilePhone"),
+		Email:           r.FormValue("email"),
+		Describe:        r.FormValue("describe"),
+		CV:              attachment, // Asignar el objeto Attachment
+		IdJob:           r.FormValue("idJob"),
+		DatePostulation: time.Now(), // Fecha de la postulación
+	}
+
+	// Guardar la postulación en la base de datos
+	_, err = bd.InsertPostulationJob(postulation)
 	if err != nil {
-		// error al enviar la postulacion por email al usuario que publico el empleo
-		http.Error(w, "Error sending the application by email to the user who posted the job: "+err.Error(), 400)
+		http.Error(w, "Error al guardar la postulación: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Enviar mail al usuario que postuló el empleo
+	statusSendEmail, err := service.SendPostulationEmail(postulation)
+	if err != nil {
+		http.Error(w, "Error sending the application by email to the user who posted the job: "+err.Error(), http.StatusBadRequest)
 		return
 	} else {
 		if statusSendEmail {
@@ -53,11 +85,10 @@ func SavePostulationJob(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if !status {
-		// No se guardo la publicacion en la bd
-		http.Error(w, "Failed to save the postulation.", 400)
-		return
-	}
-
+	// Enviar una respuesta JSON de éxito
+	response := map[string]string{"message": "Postulation saved successfully"}
+	jsonResponse, _ := json.Marshal(response)
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
+	w.Write(jsonResponse)
 }

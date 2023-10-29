@@ -12,6 +12,8 @@ import (
 // SendPostulationEmail: Se encarga de enviar el email al reclutador con la información del postulante
 func SendPostulationEmail(candidate models.PostulationJob) (bool, error) {
 	// Buscar el email del usuario que postuló el empleo con el t.IdJob
+	fmt.Println("id del candidato: ", candidate.IdJob)
+
 	recruiterPostulation, err := bd.SearchRecruiter(candidate.IdJob)
 	fmt.Println("Email del reclutador: ", recruiterPostulation.EmailRecruiter)
 	if err != nil {
@@ -21,7 +23,7 @@ func SendPostulationEmail(candidate models.PostulationJob) (bool, error) {
 	// Configurar el cliente de correo
 	d := gomail.NewDialer("smtp.your-email-provider.com", 587, "valkiria.jobs@gmail.com", "Tesis1999")
 
-	// Construccion del cuerpo del mensaje
+	// Construcción del cuerpo del mensaje
 	body := "Información del candidato:\n"
 	body += "\t" + "Nombre: " + candidate.Name + " " + candidate.Surname + "\n"
 	body += "\t" + "Email: " + candidate.Email + "\n"
@@ -35,23 +37,13 @@ func SendPostulationEmail(candidate models.PostulationJob) (bool, error) {
 	subject := recruiterPostulation.Position + " | " + candidate.Name + " " + candidate.Surname
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", "valkiria.jobs@gmail.com")         // Se envia desde el email de ValkirIA
-	m.SetHeader("To", recruiterPostulation.EmailRecruiter) // Se le envia al reclutador
+	m.SetHeader("From", "valkiria.jobs@gmail.com")         // Se envía desde el email de ValkirIA
+	m.SetHeader("To", recruiterPostulation.EmailRecruiter) // Se le envía al reclutador
 	m.SetHeader("Subject", subject)
 	m.SetBody("text/plain", body)
 
 	// Adjuntar el archivo PDF
-	file, err := candidate.CV.Open()
-	if err != nil {
-		return false, err
-	}
-	defer file.Close()
-
-	// Leer los datos del archivo adjunto
-	attachmentData, err := io.ReadAll(file)
-	if err != nil {
-		return false, err
-	}
+	attachmentData := candidate.CV.Content
 
 	// Agregar el archivo adjunto al correo
 	m.Attach(candidate.CV.Filename, gomail.SetCopyFunc(func(w io.Writer) error {
